@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.spring_xp_monolith.dto.adminUsers.CreateAdminUserRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ import lombok.Data;
 @Data
 @Entity
 // @Table(name="admn_user")
-public class AdminUsers {
+public class AdminUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,10 +36,17 @@ public class AdminUsers {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     private Boolean isDelete = false;
+
+    public AdminUser(CreateAdminUserRequestDto request) {
+        this.name = request.getName();
+        this.mobile = request.getMobile();
+        this.email = request.getEmail();
+        this.password = request.getPassword();
+    }
 }
