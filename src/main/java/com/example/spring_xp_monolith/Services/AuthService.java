@@ -45,13 +45,17 @@ public class AuthService {
     }
 
     public List<AdminUser> getAdminUsers(Long id){
-        List<AdminUser> adminUsers;
-        if(id != null){
-            adminUsers = repo.findById(id).stream().toList();
+        try {
+            List<AdminUser> adminUsers;
+            if(id != null){
+                adminUsers = repo.findById(id).stream().toList();
+            }
+            else{
+                adminUsers = repo.findAll();
+            }
+            return adminUsers;
+        } catch (Exception e) {
+            throw e;            
         }
-        else{
-            adminUsers = repo.findAll();
-        }
-        return adminUsers;
     }
 }

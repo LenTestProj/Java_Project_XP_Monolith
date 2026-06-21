@@ -43,6 +43,11 @@ public class AdminUser {
 
     private Boolean isDelete = false;
 
+    // Required by Hibernate
+    public AdminUser() {
+
+    }
+    
     public AdminUser(CreateAdminUserRequestDto request) {
         this.name = request.getName();
         this.mobile = request.getMobile();
