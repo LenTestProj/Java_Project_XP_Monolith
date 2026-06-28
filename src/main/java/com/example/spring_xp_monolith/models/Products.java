@@ -42,10 +42,10 @@ public class Products {
     private Boolean hasAddon = false;
 
     @Enumerated(EnumType.STRING)
-    private ClassType classType;
+    private FoodType foodType;
 
     @Enumerated(EnumType.STRING)
-    private FoodType foodType;
+    private ClassType classType;
 
     private Integer calories;
 
@@ -110,5 +110,11 @@ public class Products {
         GMS,
         LITRES,
         ML
+    }
+
+    public enum OrderType {
+        PICKUP,
+        DELIVERY,
+        ALL
     }
 }
