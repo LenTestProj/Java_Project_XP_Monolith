@@ -1,7 +1,11 @@
 package com.example.spring_xp_monolith.models;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.spring_xp_monolith.models.embedded.outlets.Coordinates;
 import com.example.spring_xp_monolith.models.embedded.outlets.PinelabCredentials;
@@ -14,9 +18,13 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -99,6 +107,10 @@ public class Outlets {
 
     private List<Platform> platforms = new ArrayList<>(); 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="menu_group", nullable = false)
+    private MenuGroups menuGroup;
+
     private Boolean isEventOutlet = false;
 
     private String gstin;
@@ -107,6 +119,18 @@ public class Outlets {
 
     @Enumerated(EnumType.STRING)
     private OutletType type;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "foodUnitId", nullable = true)
+    private ProcurementUnits foodUnit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="beverageUnitId", nullable = false)
+    private ProcurementUnits beverageUnit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="centralUnitId", nullable = false)
+    private ProcurementUnits centralUnit;
 
     private String minimumDeliveryRadius;
 
@@ -117,6 +141,19 @@ public class Outlets {
     private String franchiseEmail;
 
     private Boolean isDelete = false;
+
+    @Column(updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void onCreate(){
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
 
     //enum fields
     public enum Status {

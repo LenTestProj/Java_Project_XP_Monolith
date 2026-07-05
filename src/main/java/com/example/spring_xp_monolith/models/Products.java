@@ -3,6 +3,9 @@ package com.example.spring_xp_monolith.models;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
@@ -74,8 +77,11 @@ public class Products {
 
     // timestamps:true equivalent
 
+    @Column(updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @PrePersist
