@@ -1,4 +1,4 @@
-package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators;
+package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators.ValidateCategoryName;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

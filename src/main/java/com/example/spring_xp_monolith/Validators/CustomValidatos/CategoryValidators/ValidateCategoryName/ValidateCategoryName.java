@@ -1,4 +1,4 @@
-package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators;
+package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators.ValidateCategoryName;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
