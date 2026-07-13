@@ -1,6 +1,7 @@
 package com.example.spring_xp_monolith.models;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -10,15 +11,24 @@ import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category",nullable = false)
+    private Categories category;
 
     private Integer productCost = 0;
 
@@ -70,8 +80,15 @@ public class Products {
     private Boolean isStatusAutoUpdated = false;
 
 
-    private Boolean isNewProduct = false;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name="excluded_outlets", 
+        joinColumns = @JoinColumn(name="product_id"),
+        inverseJoinColumns = @JoinColumn(name="outlet_id")
+    )
+    private List<Outlets> excludedOutlets=new ArrayList<Outlets>();
 
+    private Boolean isNewProduct = false;
 
     private Boolean isDelete = false;
 
