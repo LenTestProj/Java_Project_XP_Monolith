@@ -13,7 +13,9 @@ import com.example.spring_xp_monolith.models.embedded.outlets.Platform;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -105,6 +107,11 @@ public class Outlets {
     @Enumerated(EnumType.STRING)
     private OutletSequence outlet_sequence;
 
+    @ElementCollection
+    @CollectionTable(
+        name = "outlet_platforms",
+        joinColumns = @JoinColumn(name = "outlet_id")
+    )
     private List<Platform> platforms = new ArrayList<>(); 
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import lombok.Data;
 
+@Data
+@Entity
 public class Categories {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
