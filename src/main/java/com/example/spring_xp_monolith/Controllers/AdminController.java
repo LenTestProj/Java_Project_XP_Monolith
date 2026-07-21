@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spring_xp_monolith.Services.AuthService;
+import com.example.spring_xp_monolith.Services.AdminService;
 import com.example.spring_xp_monolith.dto.adminUsers.CreateAdminUserRequestDto;
 import com.example.spring_xp_monolith.models.AdminUser;
 
@@ -25,11 +25,11 @@ import jakarta.validation.Valid;
 public class AdminController {
 
     @Autowired
-    private AuthService authService;
+    private AdminService adminService;
 
     @GetMapping
     public List<AdminUser> getUsers(@RequestParam(required = false) Long id){
-        return authService.getAdminUsers(id);
+        return adminService.getAdminUsers(id);
     }
 
     @PostMapping
@@ -38,7 +38,7 @@ public class AdminController {
         @RequestBody CreateAdminUserRequestDto request
     ){
         AdminUser newAdminUser = new AdminUser(request);
-        return authService.createAdminUser(newAdminUser);
+        return adminService.createAdminUser(newAdminUser);
     }
 
     @PutMapping
@@ -47,7 +47,7 @@ public class AdminController {
         AdminUser
         request
     ){
-        return authService.updateAdminUser(request.getId(), request);
+        return adminService.updateAdminUser(request.getId(), request);
     }
 
     @DeleteMapping
@@ -55,6 +55,6 @@ public class AdminController {
         @Valid @RequestBody
         Long id
     ){
-        return authService.deleteAdminUser(id);
+        return adminService.deleteAdminUser(id);
     }
 }
