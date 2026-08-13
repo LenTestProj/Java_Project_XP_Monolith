@@ -15,7 +15,7 @@ public class NullorBlankValidator implements ConstraintValidator<NullorNotBlank,
 
         context.disableDefaultConstraintViolation();
         if(value.trim().isEmpty()){
-            context.buildConstraintViolationWithTemplate("Value cannot be empty");
+            context.buildConstraintViolationWithTemplate("Value cannot be empty").addConstraintViolation();
             return false;
         }
 

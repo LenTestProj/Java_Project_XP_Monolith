@@ -1,4 +1,4 @@
-package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators.ValidateCategoryName;
+package com.example.spring_xp_monolith.Validators.CategoryValidators.ValidateCategoryById;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy = ValidateCategoryNameValidator.class)
+@Constraint(validatedBy = ValidateCategoryByIdValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-public @interface ValidateCategoryName {
-    String message() default "Category Name already exists";
+public @interface ValidateCategoryById {
+    String message() default "Category Id does not exist";
 
     Class<?>[] groups() default {};
 

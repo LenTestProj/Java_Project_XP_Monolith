@@ -2,7 +2,7 @@ package com.example.spring_xp_monolith.dto.categories;
 
 import java.util.List;
 
-import com.example.spring_xp_monolith.Validators.CustomValidatos.OutletValidators.ValidateExcludedOutlets.ValidateExcludedOutlets;
+import com.example.spring_xp_monolith.Validators.OutletValidators.ValidateExcludedOutlets.ValidateExcludedOutlets;
 import com.example.spring_xp_monolith.models.Categories;
 
 import jakarta.validation.Valid;

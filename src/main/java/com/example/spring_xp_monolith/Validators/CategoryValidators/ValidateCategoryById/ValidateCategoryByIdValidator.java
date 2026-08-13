@@ -1,4 +1,4 @@
-package com.example.spring_xp_monolith.Validators.CustomValidatos.CategoryValidators.ValidateCategoryById;
+package com.example.spring_xp_monolith.Validators.CategoryValidators.ValidateCategoryById;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

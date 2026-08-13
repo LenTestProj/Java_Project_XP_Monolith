@@ -1,4 +1,4 @@
-package com.example.spring_xp_monolith.Validators.CustomValidatos.OutletValidators.ValidateExcludedOutlets;
+package com.example.spring_xp_monolith.Validators.OutletValidators.ValidateExcludedOutlets;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,8 +15,11 @@ import jakarta.validation.ConstraintValidatorContext;
 @Component
 public class ValidateExcludedOutletsValidator implements ConstraintValidator<ValidateExcludedOutlets, List<Long>>{
     
-    @Autowired
-    private OutletsRepo outletRepository;
+    private final OutletsRepo outletRepository;
+
+    ValidateExcludedOutletsValidator(OutletsRepo outletRepository){
+        this.outletRepository = outletRepository;
+    }
 
     @Override
     public boolean isValid(List<Long> outletIds,ConstraintValidatorContext context){
@@ -32,13 +35,13 @@ public class ValidateExcludedOutletsValidator implements ConstraintValidator<Val
             Long id = outletIds.get(i);
             //cehck for duplicate Ids.
             if(!uniqueIds.add(id)){
-                context.buildConstraintViolationWithTemplate("Duplciate Ids exists");
+                context.buildConstraintViolationWithTemplate("Duplciate Ids exists").addConstraintViolation();
                 return false;
             }
 
             if(!outletRepository.existsById(id)){
                 //send error message
-                context.buildConstraintViolationWithTemplate("The outlet Id "+id+"does not exist at position "+(i+1));
+                context.buildConstraintViolationWithTemplate("The outlet Id "+id+"does not exist at position "+(i+1)).addConstraintViolation();
                 return false;
             }
         }
