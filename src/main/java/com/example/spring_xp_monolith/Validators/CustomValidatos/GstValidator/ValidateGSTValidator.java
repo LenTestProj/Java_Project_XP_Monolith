@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 @Component
 public class ValidateGSTValidator implements ConstraintValidator<ValidateGST, String>{
@@ -17,35 +18,32 @@ public class ValidateGSTValidator implements ConstraintValidator<ValidateGST, St
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Override
-    public boolean isValid(String value, ConstraintValidator context ){
+    public boolean isValid(String value, ConstraintValidatorContext context){
         try {
-            if(value == null || value.trim().isEmpty()){
+             String regexValidateGST="^\\d{2}[0-9a-zA-Z]+$";
+
+            if(value == null){
+                return true;
+            }
+            if(value.trim().isEmpty()){
+                context.buildConstraintViolationWithTemplate("GST is empty").addConstraintViolation();
                 return false;
             }
 
-            //Check for 6 repeating digits (000000, 111111, etc.)
-            if(value.matches("(\\d)\\1{5}")){
+            if(value.trim().length() != 15){
+                context.buildConstraintViolationWithTemplate("GST number should be less than 15").addConstraintViolation();
                 return false;
             }
 
-            String response =
-                    restTemplate.getForObject(
-                            URL + value,
-                            String.class
-                    );
+            if(!value.matches(regexValidateGST)){
+                context.buildConstraintViolationWithTemplate("Invalid GST Format. GSTIN first 2 digits should be numeric and length should not exceed 15 and should be alphanumeric").addConstraintViolation();
+                return false;
+            }
 
-            ObjectMapper mapper = new ObjectMapper();
+            return true;
 
-            JsonNode json =
-                    mapper.readTree(response);
-
-            String status =
-                    json.get(0)
-                            .get("Status")
-                            .asText();
-
-            return "Success".equals(status);
         } catch (Exception e) {
+            context.buildConstraintViolationWithTemplate("The error occured while validating Pin Code is:").addConstraintViolation();
             return false;
         }
     }

@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.spring_xp_monolith.Enums.Users.Gender;
+import com.example.spring_xp_monolith.Enums.Users.SignupType;
 import com.example.spring_xp_monolith.models.embedded.Users.Device;
 
 import jakarta.persistence.CollectionTable;
@@ -99,20 +101,5 @@ public class Users {
     @PreUpdate
     protected void onUpdate(){
         updatedAt = LocalDateTime.now();
-    }
-
-
-    // - enum types --------
-
-    public enum SignupType {
-        REGULAR,
-        GOOGLE,
-        APPLE
-    }
-
-    public enum Gender {
-        MALE,
-        FEMALE,
-        OTHERS
     }
 }

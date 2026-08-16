@@ -1,6 +1,5 @@
 package com.example.spring_xp_monolith.Validators.OutletValidators.ValidateExistingOutlets;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.spring_xp_monolith.dao.OutletsRepo;

@@ -2,9 +2,9 @@ package com.example.spring_xp_monolith.dto.outlets;
 
 import java.util.List;
 
-import com.example.spring_xp_monolith.models.MenuGroups;
-import com.example.spring_xp_monolith.models.Outlets.PaymentType;
-import com.example.spring_xp_monolith.models.ProcurementUnits;
+import com.example.spring_xp_monolith.Enums.Custom.CustomEnums.Status;
+import com.example.spring_xp_monolith.Validators.CustomValidatos.GstValidator.ValidateGST;
+import com.example.spring_xp_monolith.Validators.MenuGroupValidators.ValidateExistingMenuGroup;
 import com.example.spring_xp_monolith.models.Categories.OrderType;
 import com.example.spring_xp_monolith.models.embedded.outlets.Coordinates;
 import com.example.spring_xp_monolith.models.embedded.outlets.PinelabCredentials;
@@ -16,7 +16,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class AddOutletRequestDto {
     @NotBlank(message = "Outlet name is required")
     private String name;
@@ -51,7 +53,7 @@ public class AddOutletRequestDto {
     private Status status;
 
     @NotNull(message = "Payment type is required")
-    private PaymentType paymentType;
+    private com.example.spring_xp_monolith.Enums.OutletEnum.PaymentType paymentType;
 
     @NotNull(message = "Order accept type is required")
     private OrderType orderAcceptType;
@@ -69,7 +71,7 @@ public class AddOutletRequestDto {
         max = 15,
         message = "GST number should be of length 15"
     )
-    @ValidGST
+    @ValidateGST
     private String gstin;
 
     @Valid
@@ -83,7 +85,7 @@ public class AddOutletRequestDto {
     private String type;
 
     @NotNull(message = "Menu Group is required")
-    @CheckIfMenuGroupExists
+    @ValidateExistingMenuGroup
     private String menuGroup;
 
     private String franchiseName;

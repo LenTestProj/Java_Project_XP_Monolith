@@ -7,6 +7,9 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.spring_xp_monolith.Enums.Products.ClassType;
+import com.example.spring_xp_monolith.Enums.Products.FoodType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -109,39 +112,5 @@ public class Products {
     public void onCreate(){
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-    }
-    
-    //atore enums
-    public enum Status {
-        ACTIVE, 
-        INACTIVE
-    }
-
-    public enum FoodType {
-        VEG,
-        NON_VEG,
-        VEGAN,
-        VEG_VEGAN
-    }
-
-    public enum ClassType {
-        FOOD,
-        BEVERAGE,
-        COMBOS,
-        DESSERTS,
-        EXTRAS
-    }
-
-    public enum WeightUnit {
-        KG,
-        GMS,
-        LITRES,
-        ML
-    }
-
-    public enum OrderType {
-        PICKUP,
-        DELIVERY,
-        ALL
     }
 }

@@ -7,6 +7,11 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.spring_xp_monolith.Enums.Custom.CustomEnums.OrderType;
+import com.example.spring_xp_monolith.Enums.Custom.CustomEnums.Status;
+import com.example.spring_xp_monolith.Enums.OutletEnum.OutletSequence;
+import com.example.spring_xp_monolith.Enums.OutletEnum.OutletType;
+import com.example.spring_xp_monolith.Enums.OutletEnum.PaymentType;
 import com.example.spring_xp_monolith.models.embedded.outlets.Coordinates;
 import com.example.spring_xp_monolith.models.embedded.outlets.PinelabCredentials;
 import com.example.spring_xp_monolith.models.embedded.outlets.Platform;
@@ -161,33 +166,4 @@ public class Outlets {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
-
-    //enum fields
-    public enum Status {
-        ACTIVE,
-        INACTIVE,
-        COMING_SOON
-    }
-
-    public enum PaymentType {
-        PAYMENT_GATEWAY,
-        CARD_SWIPE
-    }
-
-    public enum OrderType {
-        PICKUP,
-        DELIVERY,
-        ALL
-    }
-
-    public enum OutletType {
-        COMPANY_OWNED,
-        FRANCHISE,
-        EVENT
-    }
-
-    public enum OutletSequence {
-        A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z
-    }
-
 }

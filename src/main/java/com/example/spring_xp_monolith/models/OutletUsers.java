@@ -1,5 +1,8 @@
 package com.example.spring_xp_monolith.models;
 
+import com.example.spring_xp_monolith.Enums.Custom.CustomEnums.Status;
+import com.example.spring_xp_monolith.Enums.OutletUserEnum.Role;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,16 +45,4 @@ public class OutletUsers {
     private Status status = Status.INACTIVE;
 
     private Boolean isDelete = false;
-
-    //ENUM
-    public enum Role {
-        CASHIER,
-        MANAGER,
-        CAFE_MANAGER
-    }
-
-    public enum Status {
-        ACTIVE,
-        INACTIVE
-    }
 }
