@@ -4,23 +4,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.example.spring_xp_monolith.Services.Authentication.AdminUserPrincipal;
+import com.example.spring_xp_monolith.Services.Authentication.UserPrincipal;
+import com.example.spring_xp_monolith.dao.AdminUsersRepo;
+import com.example.spring_xp_monolith.dao.OutletsRepo;
+import com.example.spring_xp_monolith.dao.UserRepo;
+
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-    @Autowired
-    private AdminRepository adminRepository;
+    private final AdminUsersRepo adminRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepo userRepository;
 
-    @Autowired
-    private OutletRepository outletRepository;
+    private OutletsRepo outletRepository;
 
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    CustomAuthenticationProvider(AdminUsersRepo adminRepository,UserRepo userRepository,BCryptPasswordEncoder passwordEncoder){
+        this.adminRepository = adminRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public Authentication authenticate(
@@ -44,7 +54,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 userDetails = adminRepository
                         .findByEmailAndIsDeleteFalse(username)
-                        .map(CustomUserPrincipal::new)
+                        .map(AdminUserPrincipal::new)
                         .orElseThrow(() ->
                                 new BadCredentialsException("Admin not found"));
 
@@ -54,8 +64,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
                 userDetails = userRepository
                         .findByEmailAndIsDeleteFalse(username)
-                        .map(CustomUserPrincipal::new)
-                        .orElseThrow(() ->
+                        .map(UserPrincipal::new)                        .orElseThrow(() ->
                                 new BadCredentialsException("User not found"));
 
                 break;

@@ -20,12 +20,15 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtFilter extends OncePerRequestFilter{
     
-    @Autowired
-    JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    ApplicationContext context;
+    private final ApplicationContext context;
 
+    JwtFilter( JwtService jwtService,ApplicationContext context){
+        this.jwtService = jwtService;
+        this.context = context;
+    }
+    
     @Override
     protected void doFilterInterval(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException,ServletException{
         String authHeader = request.getHeader("Authorization");
@@ -38,7 +41,7 @@ public class JwtFilter extends OncePerRequestFilter{
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = context.getBean()
+            UserDetails userDetails = context.getBean();
         }
     }
 
