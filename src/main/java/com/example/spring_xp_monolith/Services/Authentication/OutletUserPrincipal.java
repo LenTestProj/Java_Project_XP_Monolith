@@ -7,29 +7,30 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.spring_xp_monolith.models.Users;
+import com.example.spring_xp_monolith.models.OutletUsers;
 
 import jakarta.annotation.Nullable;
 
-public class UserPrincipal implements UserDetails {
-    private Users user;
+public class OutletUserPrincipal implements UserDetails{
+    private OutletUsers outletUser;
 
-    public UserPrincipal(Users user){
-        this.user = user;
+    public OutletUserPrincipal(OutletUsers outletUser){
+        this.outletUser = outletUser;
     }
 
     @Override
     public String getUsername(){
-        return user.getEmail();
+        return outletUser.getEmail();
     }
 
-    @Override
+    @Override 
     public @Nullable String getPassword(){
-        return user.getPassword();
+        return outletUser.getPassword();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_OUTLET_USER"));
     }
+
 }

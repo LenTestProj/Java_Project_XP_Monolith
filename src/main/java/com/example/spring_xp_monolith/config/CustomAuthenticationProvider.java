@@ -11,8 +11,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.spring_xp_monolith.Services.Authentication.AdminUserPrincipal;
+import com.example.spring_xp_monolith.Services.Authentication.OutletUserPrincipal;
 import com.example.spring_xp_monolith.Services.Authentication.UserPrincipal;
 import com.example.spring_xp_monolith.dao.AdminUsersRepo;
+import com.example.spring_xp_monolith.dao.OutletUserRepo;
 import com.example.spring_xp_monolith.dao.OutletsRepo;
 import com.example.spring_xp_monolith.dao.UserRepo;
 
@@ -22,7 +24,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserRepo userRepository;
 
-    private OutletsRepo outletRepository;
+    private OutletUserRepo outletUsersRepo;
 
     private BCryptPasswordEncoder passwordEncoder;
 
@@ -57,23 +59,20 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
                         .map(AdminUserPrincipal::new)
                         .orElseThrow(() ->
                                 new BadCredentialsException("Admin not found"));
-
                 break;
 
             case "U":
 
                 userDetails = userRepository
                         .findByEmailAndIsDeleteFalse(username)
-                        .map(UserPrincipal::new)                        .orElseThrow(() ->
-                                new BadCredentialsException("User not found"));
-
+                        .map(UserPrincipal::new)            .orElseThrow(() ->
+                            new BadCredentialsException("User not found"));
                 break;
 
             case "O":
-
-                userDetails = outletRepository
+                userDetails = outletUsersRepo
                         .findByEmailAndIsDeleteFalse(username)
-                        .map(CustomUserPrincipal::new)
+                        .map(OutletUserPrincipal::new)
                         .orElseThrow(() ->
                                 new BadCredentialsException("Outlet user not found"));
 
