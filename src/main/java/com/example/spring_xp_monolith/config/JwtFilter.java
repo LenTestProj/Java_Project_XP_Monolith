@@ -2,15 +2,15 @@ package com.example.spring_xp_monolith.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.spring_xp_monolith.Services.JwtService;
+import com.example.spring_xp_monolith.Services.Authentication.UserLookupService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,11 +22,11 @@ public class JwtFilter extends OncePerRequestFilter{
     
     private final JwtService jwtService;
 
-    private final ApplicationContext context;
+    private final UserLookupService userLookupService;
 
-    JwtFilter(JwtService jwtService,ApplicationContext context){
+    JwtFilter(JwtService jwtService,UserLookupService userLookupService){
         this.jwtService = jwtService;
-        this.context = context;
+        this.userLookupService = userLookupService;
     }
     
     @Override
@@ -43,70 +43,82 @@ public class JwtFilter extends OncePerRequestFilter{
         }
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = context.getBean();
+            UserDetails userDetails = userLookupService.loadUser(username, role);
+
+            //validate JWT
+            if(jwtService.validateToken(token, userDetails)){
+
+                //create spring security Security Authentication
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
+
+        //Continue to the next filter
+        filterChain.doFilter(request, response);
     }
 
 }
 
 //
-@Component
-public class JwtFilter extends OncePerRequestFilter {
+// @Component
+// public class JwtFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserLookupService userLookupService;
+//     private final JwtService jwtService;
+//     private final UserLookupService userLookupService;
 
-    public JwtFilter(
-            JwtService jwtService,
-            UserLookupService userLookupService) {
+//     public JwtFilter(
+//             JwtService jwtService,
+//             UserLookupService userLookupService) {
 
-        this.jwtService = jwtService;
-        this.userLookupService = userLookupService;
-    }
+//         this.jwtService = jwtService;
+//         this.userLookupService = userLookupService;
+//     }
 
-    @Override
-    protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws IOException, ServletException {
+//     @Override
+//     protected void doFilterInternal(
+//             HttpServletRequest request,
+//             HttpServletResponse response,
+//             FilterChain filterChain)
+//             throws IOException, ServletException {
 
-        String authHeader = request.getHeader("Authorization");
+//         String authHeader = request.getHeader("Authorization");
 
-        String token = null;
-        String username = null;
-        String role = null;
+//         String token = null;
+//         String username = null;
+//         String role = null;
 
-        if (authHeader != null &&
-            authHeader.startsWith("Bearer ")) {
+//         if (authHeader != null &&
+//             authHeader.startsWith("Bearer ")) {
 
-            token = authHeader.substring(7);
+//             token = authHeader.substring(7);
 
-            username = jwtService.extractUserName(token);
-            role = jwtService.extractRole(token);
-        }
+//             username = jwtService.extractUserName(token);
+//             role = jwtService.extractRole(token);
+//         }
 
-        if (username != null &&
-            SecurityContextHolder.getContext()
-                    .getAuthentication() == null) {
+//         if (username != null &&
+//             SecurityContextHolder.getContext()
+//                     .getAuthentication() == null) {
 
-            UserDetails userDetails =
-                    userLookupService.loadUser(username, role);
+//             UserDetails userDetails =
+//                     userLookupService.loadUser(username, role);
 
-            if (jwtService.validateToken(token, userDetails)) {
+//             if (jwtService.validateToken(token, userDetails)) {
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+//                 UsernamePasswordAuthenticationToken authentication =
+//                         new UsernamePasswordAuthenticationToken(
+//                                 userDetails,
+//                                 null,
+//                                 userDetails.getAuthorities()
+//                         );
 
-                SecurityContextHolder.getContext()
-                        .setAuthentication(authentication);
-            }
-        }
+//                 SecurityContextHolder.getContext()
+//                         .setAuthentication(authentication);
+//             }
+//         }
 
-        filterChain.doFilter(request, response);
-    }
-}
+//         filterChain.doFilter(request, response);
+//     }
+// }
