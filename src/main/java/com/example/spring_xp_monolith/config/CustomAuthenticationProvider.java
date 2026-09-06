@@ -1,6 +1,5 @@
 package com.example.spring_xp_monolith.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,7 +14,6 @@ import com.example.spring_xp_monolith.Services.Authentication.OutletUserPrincipa
 import com.example.spring_xp_monolith.Services.Authentication.UserPrincipal;
 import com.example.spring_xp_monolith.dao.AdminUsersRepo;
 import com.example.spring_xp_monolith.dao.OutletUserRepo;
-import com.example.spring_xp_monolith.dao.OutletsRepo;
 import com.example.spring_xp_monolith.dao.UserRepo;
 
 @Component
@@ -24,14 +22,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private final UserRepo userRepository;
 
-    private OutletUserRepo outletUsersRepo;
+    private final OutletUserRepo outletUsersRepo;
 
-    private BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    CustomAuthenticationProvider(AdminUsersRepo adminRepository,UserRepo userRepository,BCryptPasswordEncoder passwordEncoder){
+    public CustomAuthenticationProvider(AdminUsersRepo adminRepository,UserRepo userRepository,BCryptPasswordEncoder passwordEncoder, OutletUserRepo outletUsersRepo){
         this.adminRepository = adminRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.outletUsersRepo = outletUsersRepo;
     }
 
     @Override
