@@ -29,6 +29,7 @@ public class JwtFilter extends OncePerRequestFilter{
         this.userLookupService = userLookupService;
     }
     
+    //gets called by request
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException,ServletException{
         String authHeader = request.getHeader("Authorization");
