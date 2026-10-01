@@ -10,6 +10,8 @@ public interface UserRepo extends JpaRepository<Users,Long> {
     Optional<Users> findByIdAndIsDeleteFalse(Long userId);
 
     Optional<Users> findByEmailAndIsDeleteFalse(String userEmail);
+
+    Optional<Users> findByMobileAndIsDeleteFalse(String userMobile);
 }
 
 

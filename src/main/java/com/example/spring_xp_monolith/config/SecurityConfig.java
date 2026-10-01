@@ -22,8 +22,11 @@ import com.example.spring_xp_monolith.Services.Authentication.AdminUserDetials;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
     private AdminUserDetials adminUserDetials;
+
+    SecurityConfig(AdminUserDetials adminUserDetials){
+        this.adminUserDetials = adminUserDetials;
+    }
 
     @Bean
     public AuthenticationProvider authprovider(){
@@ -64,7 +67,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+    BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(12);
     }
+
+    // @Bean
+    // PasswordEncoder passwordEncoder(){
+    //     return new BCryptPasswordEncoder();
+    // }
 }

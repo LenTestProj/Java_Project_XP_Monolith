@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -40,17 +41,23 @@ public class JwtService {
         }
     }
     
-    public String generateToken(String username, String role){
+    public String generateToken(String username, String role, Long expirationTimeMillis){
         Map<String, Object> claims = new HashMap<>();
         claims.put("role",role);
 
-        return Jwts.builder()
+        JwtBuilder builder = Jwts.builder()
         .setClaims(claims)
         .setSubject(username)
         .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + 1000*60*3))
-        .signWith(getKey(), SignatureAlgorithm.HS256)
-        .compact();
+        // .setExpiration(expiry)
+        .signWith(getKey(), SignatureAlgorithm.HS256);
+        
+        if(expirationTimeMillis != null){
+            Date expiration = new Date(System.currentTimeMillis() + expirationTimeMillis);
+            builder.setExpiration(expiration);
+        }
+    
+        return builder.compact();
     }
 
     private Key getKey(){

@@ -3,6 +3,8 @@ package com.example.spring_xp_monolith.dto.Users;
 import java.util.List;
 
 import com.example.spring_xp_monolith.Validators.CustomValidatos.NameValidators.ValidateName;
+import com.example.spring_xp_monolith.Validators.UserValidators.ValidateUniqueEmail.ValidateUniqueEmail;
+import com.example.spring_xp_monolith.Validators.UserValidators.ValidateUniqueMobile.ValidateUniqueMobile;
 import com.example.spring_xp_monolith.models.embedded.Users.Device;
 
 import jakarta.validation.constraints.Email;
@@ -23,10 +25,12 @@ public class CreateAccountDto {
         message = "Mobile number must be a number"
     )
     @Size(min=10, max=10, message = "Mobile must be 10 digit")
+    @ValidateUniqueMobile 
     private String mobile;
 
     @NotBlank(message = "Email cannot be blank")
     @Email(message = "Please enter a valid email format")
+    @ValidateUniqueEmail 
     private String email;
 
     @NotBlank(message = "Password cannot be blank")

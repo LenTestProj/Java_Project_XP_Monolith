@@ -3,10 +3,12 @@ package com.example.spring_xp_monolith.Services.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import com.example.spring_xp_monolith.dao.AdminUsersRepo;
 import com.example.spring_xp_monolith.models.AdminUser;
 
+@Service 
 public class AdminUserDetials implements UserDetailsService  {
     private AdminUsersRepo adminUserRepo;
 
