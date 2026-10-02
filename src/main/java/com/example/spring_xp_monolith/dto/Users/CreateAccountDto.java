@@ -2,6 +2,7 @@ package com.example.spring_xp_monolith.dto.Users;
 
 import java.util.List;
 
+import com.example.spring_xp_monolith.Enums.Users.SignupType;
 import com.example.spring_xp_monolith.Validators.CustomValidatos.NameValidators.ValidateName;
 import com.example.spring_xp_monolith.Validators.UserValidators.ValidateUniqueEmail.ValidateUniqueEmail;
 import com.example.spring_xp_monolith.Validators.UserValidators.ValidateUniqueMobile.ValidateUniqueMobile;
@@ -42,11 +43,13 @@ public class CreateAccountDto {
         regexp = "^(REGULAR|GOOGLE|APPLE)$",
         message= "Signup type should be either of the three values - REGULAR, GOOGLE or APPLE"
     )
-    private String signupType;
+    private SignupType signupType;
 
     private List<Device> devices;
 
     private String referringUser;
 
     private String referringUserMobile;
+
+    private String outletId;
 }
