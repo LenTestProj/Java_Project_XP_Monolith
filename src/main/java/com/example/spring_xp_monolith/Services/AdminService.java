@@ -2,17 +2,20 @@ package com.example.spring_xp_monolith.Services;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.spring_xp_monolith.Controllers.Errors.ResourceNotFoundException;
 import com.example.spring_xp_monolith.dao.AdminUsersRepo;
 import com.example.spring_xp_monolith.models.AdminUser;
 
 @Service
 public class AdminService {
-    @Autowired
     private AdminUsersRepo repo;
+
+    AdminService(AdminUsersRepo repo){
+        this.repo = repo;
+    }
 
     private BCryptPasswordEncoder encoder =  new BCryptPasswordEncoder(12);
 
@@ -22,7 +25,7 @@ public class AdminService {
     }
 
     public AdminUser updateAdminUser(Long id, AdminUser adminUser){
-        AdminUser existingUser = repo.findById(id).orElseThrow(() -> new RuntimeException("Admin user not found"));
+        AdminUser existingUser = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Admin user not found"));
 
         existingUser.setName(adminUser.getName());
         existingUser.setEmail(adminUser.getEmail());
@@ -37,24 +40,20 @@ public class AdminService {
     }
 
     public AdminUser deleteAdminUser(Long id){
-        AdminUser existingAdminUser = repo.findById(id).orElseThrow(() -> new RuntimeException("Admin user not found"));
+        AdminUser existingAdminUser = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Admin user not found"));
 
         existingAdminUser.setIsDelete(true);
         return repo.save(existingAdminUser);
     }
 
     public List<AdminUser> getAdminUsers(Long id){
-        try {
-            List<AdminUser> adminUsers;
-            if(id != null){
-                adminUsers = repo.findById(id).stream().toList();
-            }
-            else{
-                adminUsers = repo.findAll();
-            }
-            return adminUsers;
-        } catch (Exception e) {
-            throw e;            
+        List<AdminUser> adminUsers;
+        if(id != null){
+            adminUsers = repo.findById(id).stream().toList();
         }
+        else{
+            adminUsers = repo.findAll();
+        }
+        return adminUsers;
     }
 }
