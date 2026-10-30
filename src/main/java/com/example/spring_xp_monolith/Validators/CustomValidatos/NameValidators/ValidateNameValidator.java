@@ -11,7 +11,7 @@ public class ValidateNameValidator implements ConstraintValidator<ValidateName, 
             return true;
         }
 
-        return name.matches("^[a-zA-Z]+$");
+        return name.matches("^[a-zA-Z]+(\\s[a-zA-Z]+)*$");
     }
 
 }

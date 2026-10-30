@@ -28,12 +28,12 @@ public class SecurityConfig {
         this.adminUserDetials = adminUserDetials;
     }
 
-    @Bean
-    public AuthenticationProvider authprovider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(adminUserDetials);
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
-        return provider;
-    }
+    // @Bean
+    // public AuthenticationProvider authprovider(){
+    //     DaoAuthenticationProvider provider = new DaoAuthenticationProvider(adminUserDetials);
+    //     provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+    //     return provider;
+    // }
 
 
     @Bean

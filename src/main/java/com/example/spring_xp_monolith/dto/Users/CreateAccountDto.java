@@ -10,6 +10,7 @@ import com.example.spring_xp_monolith.models.embedded.Users.Device;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -38,11 +39,7 @@ public class CreateAccountDto {
     @Size(min=3, message = "Password should have a minimum of 3 characters")
     private String password;
 
-    @NotBlank(message = "Signup type field is required")
-    @Pattern(
-        regexp = "^(REGULAR|GOOGLE|APPLE)$",
-        message= "Signup type should be either of the three values - REGULAR, GOOGLE or APPLE"
-    )
+    @NotNull(message = "Signup type is required")
     private SignupType signupType;
 
     private List<Device> devices;

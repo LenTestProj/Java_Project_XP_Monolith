@@ -1,5 +1,6 @@
 package com.example.spring_xp_monolith.Controllers.Errors;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,25 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message",ex.getMessage()));
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of(
+                    "success", false,
+                    "message", "Validation failed",
+                    "errors", errors
+                ));
+    }
+    
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
         String message = ex.getBindingResult()
                             .getFieldErrors()
