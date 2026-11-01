@@ -7,6 +7,7 @@ import com.example.spring_xp_monolith.Controllers.Errors.ResourceNotFoundExcepti
 import com.example.spring_xp_monolith.dao.OutletsRepo;
 import com.example.spring_xp_monolith.dao.UserRepo;
 import com.example.spring_xp_monolith.dto.Users.CreateAccountDto;
+import com.example.spring_xp_monolith.dto.Users.UpdateUserDto;
 import com.example.spring_xp_monolith.models.Outlets;
 import com.example.spring_xp_monolith.models.Users;
 
@@ -60,5 +61,99 @@ public class UserService {
         Users userResponse = userRepo.save(user); 
         return userResponse;
     }
+
+
+    /**
+     * Get User By ID
+     */
+    public Users getUserById(Long userId) {
+        return userRepo.findByIdAndIsDeleteFalse(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
+    /**
+     * Update User
+     */
+    public Users updateUser(UpdateUserDto userData) {
+
+        Users user = userRepo.findByIdAndIsDeleteFalse(userData.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (userData.getName() != null) {
+            user.setName(userData.getName());
+        }
+
+        if (userData.getMobile() != null) {
+            user.setMobile(userData.getMobile());
+        }
+
+        if (userData.getEmail() != null) {
+            user.setEmail(userData.getEmail());
+        }
+
+        if (userData.getPassword() != null && !userData.getPassword().isBlank()) {
+            user.setPassword(bCryptPasswordEncoder.encode(userData.getPassword()));
+        }
+
+        if (userData.getSignupType() != null) {
+            user.setSignupType(userData.getSignupType());
+        }
+
+        if (userData.getDevices() != null) {
+            user.setDevices(userData.getDevices());
+        }
+
+        // Update referring user
+        if (userData.getReferringUser() != null &&
+                !userData.getReferringUser().isBlank()) {
+
+            Long referringUserId = Long.parseLong(userData.getReferringUser());
+
+            Users referringUser = userRepo.findByIdAndIsDeleteFalse(referringUserId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Referring User not found"));
+
+            user.setReferringUser(referringUser);
+
+        } else if (userData.getReferringUserMobile() != null &&
+                !userData.getReferringUserMobile().isBlank()) {
+
+            Users referringUser = userRepo
+                    .findByMobileAndIsDeleteFalse(userData.getReferringUserMobile())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Referring User not found"));
+
+            user.setReferringUser(referringUser);
+        }
+
+        // Update outlet
+        if (userData.getOutletId() != null &&
+                !userData.getOutletId().isBlank()) {
+
+            Long outletId = Long.parseLong(userData.getOutletId());
+
+            Outlets outlet = outletsRepo.findById(outletId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Outlet not found"));
+
+            user.setOutlet(outlet);
+        }
+
+        return userRepo.save(user);
+    }
+
+    /**
+     * Soft Delete User
+     */
+    public Users deleteUser(Long userId) {
+
+        Users user = userRepo.findByIdAndIsDeleteFalse(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setIsDelete(true);
+
+        return userRepo.save(user);
+    }
+
         
 }
