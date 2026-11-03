@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -38,10 +39,11 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,CustomAuthenticationProvider provider) throws Exception{
         return http
             .csrf(customizer -> customizer.disable())
 
+            .authenticationProvider(provider)
             .authorizeHttpRequests(request -> request             
                 .requestMatchers("/register","/login","/user","/admin-users")
                 .permitAll()
@@ -64,9 +66,14 @@ public class SecurityConfig {
         return provider;
     }
 
-    @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
-        return config.getAuthenticationManager();
+    // @Bean
+    // AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+    //     return config.getAuthenticationManager();
+    // }
+
+       @Bean
+    AuthenticationManager authenticationManager(CustomAuthenticationProvider provider) throws Exception{
+        return new ProviderManager(provider);
     }
 
     @Bean

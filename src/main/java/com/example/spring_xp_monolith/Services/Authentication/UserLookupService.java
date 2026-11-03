@@ -19,7 +19,6 @@ public class UserLookupService {
             AdminUsersRepo adminUsersRepo,
             UserRepo userRepo,
             OutletUserRepo outletUserRepo) {
-
         this.adminUsersRepo = adminUsersRepo;
         this.userRepo = userRepo;
         this.outletUserRepo = outletUserRepo;

@@ -12,6 +12,10 @@ import com.example.spring_xp_monolith.models.AdminUser;
 public class AdminUserDetials implements UserDetailsService  {
     private AdminUsersRepo adminUserRepo;
 
+    public AdminUserDetials(AdminUsersRepo adminUsersRepo){
+        this.adminUserRepo = adminUsersRepo;
+    }
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
         AdminUser adminUser = adminUserRepo.findByEmail(username);
         if(adminUser == null){
