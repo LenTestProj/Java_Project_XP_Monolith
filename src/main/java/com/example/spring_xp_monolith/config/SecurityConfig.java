@@ -45,9 +45,9 @@ public class SecurityConfig {
 
             .authenticationProvider(provider)
             .authorizeHttpRequests(request -> request             
-                .requestMatchers("/register","/login","/user","/admin-users")
+                .requestMatchers("/register","/user","/admin-users")
                 .permitAll()
-                .requestMatchers(HttpMethod.POST,"/auth/user/login")
+                .requestMatchers(HttpMethod.POST,"/auth/user/login","/auth/admin/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -71,7 +71,7 @@ public class SecurityConfig {
     //     return config.getAuthenticationManager();
     // }
 
-       @Bean
+    @Bean
     AuthenticationManager authenticationManager(CustomAuthenticationProvider provider) throws Exception{
         return new ProviderManager(provider);
     }
