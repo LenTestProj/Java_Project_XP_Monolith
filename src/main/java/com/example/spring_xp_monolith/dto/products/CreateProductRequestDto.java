@@ -26,7 +26,7 @@ public class CreateProductRequestDto {
 
     // private String displayName;
 
-    private String coverPicture;
+    // private String coverPicture;
 
     @PositiveOrZero(message = "Product cost cannot be negative")
     private Integer productCost = 0;

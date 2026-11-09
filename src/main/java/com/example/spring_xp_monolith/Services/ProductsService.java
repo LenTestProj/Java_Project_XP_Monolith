@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.spring_xp_monolith.dao.ProductsRepo;
 import com.example.spring_xp_monolith.dao.CategoriesRepo;
@@ -22,9 +23,13 @@ public class ProductsService {
     private final ProductsRepo productsRepo;
     private final CategoriesRepo categoriesRepo;
     private final OutletsRepo outletsRepo;
+    private final ProductImageService productImageService;
 
     @Transactional
-    public Products createProduct(CreateProductRequestDto request) {
+    public Products createProduct(
+            CreateProductRequestDto request,
+            MultipartFile displayImage,
+            MultipartFile coverImage) {
 
         // Find category
         Categories category = categoriesRepo.findById(request.getCategoryId())
@@ -32,11 +37,27 @@ public class ProductsService {
 
         Products product = new Products();
 
+        // Display image - 400 x 400
+        String displayImagePath = productImageService.uploadProductImage(
+                displayImage,
+                "display",
+                400,
+                400
+        );
+
+        // Cover image - 1200 x 400
+        String coverImagePath = productImageService.uploadProductImage(
+                coverImage,
+                "cover",
+                1200,
+                400
+        );
+
         product.setCategory(category);
         product.setName(request.getName());
         product.setDescription(request.getDescription());
-        // product.setDisplayName(request.getDisplayName());
-        product.setCoverPicture(request.getCoverPicture());
+        product.setDisplayImage(displayImagePath);
+
         product.setProductCost(request.getProductCost());
         product.setMrp(request.getMrp());
         product.setOfferPrice(request.getOfferPrice());
@@ -56,6 +77,10 @@ public class ProductsService {
         product.setProductsNature(request.getProductsNature());
         product.setIsStatusAutoUpdated(request.getIsStatusAutoUpdated());
         product.setIsNewProduct(request.getIsNewProduct());
+
+
+        product.setDisplayImage(displayImagePath);
+        product.setCoverPicture(coverImagePath);
 
         // Assign excluded outlets
         if (request.getExcludedOutletIds() != null &&

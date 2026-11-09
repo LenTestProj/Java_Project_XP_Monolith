@@ -44,7 +44,7 @@ public class Products {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String displayName;
+    private String displayImage;
 
     private String coverPicture;
 
