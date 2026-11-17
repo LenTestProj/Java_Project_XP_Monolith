@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spring_xp_monolith.Services.AuthService;
+import com.example.spring_xp_monolith.dto.ApiResponse;
 import com.example.spring_xp_monolith.dto.Login.LoginRequestDto;
+import com.example.spring_xp_monolith.dto.Login.LoginResponseDto;
 
 
 @RestController 
@@ -29,7 +31,7 @@ public class AuthController {
         long oneDay = 24*60*60*1000L;
     
         String token = authService.login(request.getEmail(), request.getPassword(),"A",oneDay);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok(ApiResponse.success(new LoginResponseDto(token)));
     }
 
     @PostMapping ("/pos/login")
@@ -37,12 +39,12 @@ public class AuthController {
         long oneDay = 24*60*60*1000L;
     
         String token = authService.login(request.getEmail(), request.getPassword(),"U",oneDay);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok(ApiResponse.success(new LoginResponseDto(token)));
     }
 
     @PostMapping ("/user/login")
     public ResponseEntity<?> userLogin(@RequestBody LoginRequestDto request){
         String token = authService.login(request.getEmail(), request.getPassword(),"U",null);
-        return ResponseEntity.ok().body(token);
+        return ResponseEntity.ok(ApiResponse.success(new LoginResponseDto(token)));
     }
 }

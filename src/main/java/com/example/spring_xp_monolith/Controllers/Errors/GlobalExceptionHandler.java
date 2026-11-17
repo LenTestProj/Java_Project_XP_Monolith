@@ -9,26 +9,28 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice 
+import com.example.spring_xp_monolith.dto.ApiResponse;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
     @ExceptionHandler (IllegalArgumentException.class)
-    public ResponseEntity<Map<String,String>> handleRequest(IllegalArgumentException ex){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message",ex.getMessage()));
+    public ResponseEntity<ApiResponse<Map<String,String>>> handleRequest(IllegalArgumentException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(message(ex.getMessage())));
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String,String>> handleGeneralException(Exception ex){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message",ex.getMessage()));
+    public ResponseEntity<ApiResponse<Map<String,String>>> handleGeneralException(Exception ex){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ApiResponse.failure(message(ex.getMessage())));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String,String>> handleResourceNotFound(ResourceNotFoundException ex){
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message",ex.getMessage()));
+    public ResponseEntity<ApiResponse<Map<String,String>>> handleResourceNotFound(ResourceNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ApiResponse.failure(message(ex.getMessage())));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationExceptions(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
 
         Map<String, String> errors = new HashMap<>();
@@ -39,21 +41,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of(
-                    "success", false,
+                .body(ApiResponse.failure(Map.of(
                     "message", "Validation failed",
                     "errors", errors
-                ));
+                )));
     }
-    
-    public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex){
-        String message = ex.getBindingResult()
-                            .getFieldErrors()
-                            .stream()
-                            .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                            .findFirst()
-                            .orElse("Validation Failed");
 
-        return ResponseEntity.badRequest().body(Map.of("message",message));
-    }                    
+    // Map.of rejects null values, and exception messages can be null
+    private static Map<String, String> message(String msg) {
+        Map<String, String> body = new HashMap<>();
+        body.put("message", msg);
+        return body;
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spring_xp_monolith.Services.UserService;
+import com.example.spring_xp_monolith.dto.ApiResponse;
 import com.example.spring_xp_monolith.dto.Users.CreateAccountDto;
 import com.example.spring_xp_monolith.dto.Users.UpdateUserDto;
 import com.example.spring_xp_monolith.models.Users;
@@ -31,13 +32,13 @@ public class UserController {
     @PostMapping 
     public ResponseEntity<?> addUser(@Valid @RequestBody CreateAccountDto request){
         Users userResponse = userService.addUser(request);
-        return ResponseEntity.status(HttpStatus.OK).body(userResponse);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(userResponse));
     }
 
     @GetMapping
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         Users userResponse = userService.getUserById(userId);
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     /**
@@ -48,7 +49,7 @@ public class UserController {
             @Valid @RequestBody UpdateUserDto request) {
 
         Users userResponse = userService.updateUser(request);
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 
     /**
@@ -57,6 +58,6 @@ public class UserController {
     @DeleteMapping
     public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
         Users userResponse = userService.deleteUser(userId);
-        return ResponseEntity.ok(userResponse);
+        return ResponseEntity.ok(ApiResponse.success(userResponse));
     }
 }
