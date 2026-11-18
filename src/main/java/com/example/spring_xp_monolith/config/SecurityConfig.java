@@ -3,6 +3,7 @@ package com.example.spring_xp_monolith.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 import com.example.spring_xp_monolith.Services.Authentication.AdminUserDetials;
@@ -39,9 +41,14 @@ public class SecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,CustomAuthenticationProvider provider) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,CustomAuthenticationProvider provider,JsonAuthErrorHandler authErrorHandler,JwtFilter jwtFilter) throws Exception{
         return http
             .csrf(customizer -> customizer.disable())
+
+            .exceptionHandling(e -> e
+                .authenticationEntryPoint(authErrorHandler)
+                .accessDeniedHandler(authErrorHandler)
+            )
 
             .authenticationProvider(provider)
             .authorizeHttpRequests(request -> request             
@@ -54,7 +61,10 @@ public class SecurityConfig {
             )
 
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            
+
+            // run JWT authentication inside the security chain, before the username/password filter
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+
             .build();
 
     }
@@ -74,6 +84,15 @@ public class SecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(CustomAuthenticationProvider provider) throws Exception{
         return new ProviderManager(provider);
+    }
+
+    // JwtFilter is a @Component, so Spring Boot would also register it as a plain
+    // servlet filter. Disable that so it only runs inside the security chain.
+    @Bean
+    FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter jwtFilter) {
+        FilterRegistrationBean<JwtFilter> registration = new FilterRegistrationBean<>(jwtFilter);
+        registration.setEnabled(false);
+        return registration;
     }
 
     @Bean

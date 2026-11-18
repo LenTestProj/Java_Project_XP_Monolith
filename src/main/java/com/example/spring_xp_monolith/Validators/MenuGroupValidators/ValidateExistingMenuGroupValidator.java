@@ -15,10 +15,15 @@ public class ValidateExistingMenuGroupValidator implements ConstraintValidator<V
 
     @Override
     public boolean isValid(Long menuGroupId, ConstraintValidatorContext context){
+        // null is handled by @NotNull
+        if(menuGroupId == null){
+            return true;
+        }
+
         context.disableDefaultConstraintViolation();
         if(menuGroupRepository.findByIdAndIsDeleteFalse(menuGroupId).isEmpty()){
             //send error messages
-            context.buildConstraintViolationWithTemplate("Menu Group with the id: "+menuGroupId+ "does not exist").addConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Menu Group with the id: "+menuGroupId+ " does not exist").addConstraintViolation();
             return false;
         }
 

@@ -5,10 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
+@Constraint(validatedBy = ValidateExistingMenuGroupValidator.class)
 public @interface ValidateExistingMenuGroup {   
     String message() default "Meu Group Id does not exist";
 

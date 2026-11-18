@@ -37,23 +37,29 @@ public class JwtFilter extends OncePerRequestFilter{
         String username = null;
         String role = null;
 
-        if(authHeader != null && authHeader.startsWith("Bearer")){
-            token = authHeader.substring(7);
-            username = jwtService.extractUserName(token);
-            role = jwtService.extractRole(token);
-        }
-
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userLookupService.loadUser(username, role);
-
-            //validate JWT
-            if(jwtService.validateToken(token, userDetails)){
-
-                //create spring security Security Authentication
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if(authHeader != null && authHeader.startsWith("Bearer ")){
+                token = authHeader.substring(7);
+                username = jwtService.extractUserName(token);
+                role = jwtService.extractRole(token);
             }
+
+            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
+                UserDetails userDetails = userLookupService.loadUser(username, role);
+
+                //validate JWT
+                if(jwtService.validateToken(token, userDetails)){
+
+                    //create spring security Security Authentication
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
+        } catch (Exception e) {
+            // invalid/expired token or unknown user: continue unauthenticated,
+            // protected routes then get a JSON 401 from JsonAuthErrorHandler
+            SecurityContextHolder.clearContext();
         }
 
         //Continue to the next filter
