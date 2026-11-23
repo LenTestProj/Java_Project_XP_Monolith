@@ -32,7 +32,7 @@ public class ProductsService {
             MultipartFile coverImage) {
 
         // Find category
-        Categories category = categoriesRepo.findById(request.getCategoryId())
+        Categories category = categoriesRepo.findByIdAndIsDeleteFalse(request.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         Products product = new Products();
