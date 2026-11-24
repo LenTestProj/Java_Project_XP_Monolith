@@ -1,5 +1,8 @@
 package com.example.spring_xp_monolith.Controllers.Errors;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSourceResolvable;
@@ -21,6 +24,10 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.example.spring_xp_monolith.dto.ErrorResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -64,7 +71,45 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleUnreadable(HttpMessageNotReadableException ex) {
+        Throwable cause = ex.getMostSpecificCause();
+
+        if (cause instanceof InvalidFormatException ife) {
+            String field = fieldPath(ife);
+            Class<?> target = ife.getTargetType();
+            if (target != null && target.isEnum()) {
+                String allowed = Arrays.stream(target.getEnumConstants())
+                        .map(Object::toString)
+                        .collect(Collectors.joining(", "));
+                return build(HttpStatus.BAD_REQUEST,
+                        "Invalid value '" + ife.getValue() + "' for " + field + ". Allowed: " + allowed);
+            }
+            return build(HttpStatus.BAD_REQUEST,
+                    "Invalid value '" + ife.getValue() + "' for " + field
+                            + (target != null ? ". Expected type: " + target.getSimpleName() : ""));
+        }
+
+        if (cause instanceof MismatchedInputException mie && !mie.getPath().isEmpty()) {
+            return build(HttpStatus.BAD_REQUEST, "Invalid value for " + fieldPath(mie));
+        }
+
+        if (cause instanceof JsonProcessingException) {
+            return build(HttpStatus.BAD_REQUEST, "Malformed JSON in request body");
+        }
+
         return build(HttpStatus.BAD_REQUEST, "Malformed JSON or invalid value in request body");
+    }
+
+    private static String fieldPath(JsonMappingException ex) {
+        StringBuilder sb = new StringBuilder();
+        for (JsonMappingException.Reference ref : ex.getPath()) {
+            if (ref.getFieldName() != null) {
+                if (sb.length() > 0) sb.append('.');
+                sb.append(ref.getFieldName());
+            } else if (ref.getIndex() >= 0) {
+                sb.append('[').append(ref.getIndex()).append(']');
+            }
+        }
+        return sb.length() > 0 ? sb.toString() : "request body";
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

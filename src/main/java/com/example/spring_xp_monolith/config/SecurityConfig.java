@@ -52,7 +52,7 @@ public class SecurityConfig {
 
             .authenticationProvider(provider)
             .authorizeHttpRequests(request -> request             
-                .requestMatchers("/register","/user","/admin-users")
+                .requestMatchers("/register","/user","/admin-users","/error")
                 .permitAll()
                 .requestMatchers(HttpMethod.POST,"/auth/user/login","/auth/admin/login")
                 .permitAll()

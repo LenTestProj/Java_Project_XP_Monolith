@@ -2,6 +2,8 @@ package com.example.spring_xp_monolith.config;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter{
-    
+
+    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
+
     private final JwtService jwtService;
 
     private final UserLookupService userLookupService;
@@ -39,9 +43,11 @@ public class JwtFilter extends OncePerRequestFilter{
 
         try {
             if(authHeader != null && authHeader.startsWith("Bearer ")){
-                token = authHeader.substring(7);
+                token = authHeader.substring(7).trim();
                 username = jwtService.extractUserName(token);
                 role = jwtService.extractRole(token);
+            } else if (authHeader != null) {
+                log.warn("Authorization header on {} does not start with 'Bearer '", request.getRequestURI());
             }
 
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
@@ -59,6 +65,7 @@ public class JwtFilter extends OncePerRequestFilter{
         } catch (Exception e) {
             // invalid/expired token or unknown user: continue unauthenticated,
             // protected routes then get a JSON 401 from JsonAuthErrorHandler
+            log.warn("JWT rejected for {}: {}", request.getRequestURI(), e.toString());
             SecurityContextHolder.clearContext();
         }
 
