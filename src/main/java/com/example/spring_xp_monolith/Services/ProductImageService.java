@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
+import net.coobird.thumbnailator.tasks.UnsupportedFormatException;
 
 @Service 
 public class ProductImageService implements  WebMvcConfigurer{
@@ -26,7 +27,7 @@ public class ProductImageService implements  WebMvcConfigurer{
         }
         try {
             //fetch the directory
-            Path directory = Paths.get(uploadDir,"products");
+            Path directory = Paths.get(uploadDir,"products",imageType);
 
             //create a directory
             Files.createDirectories(directory);
@@ -41,6 +42,8 @@ public class ProductImageService implements  WebMvcConfigurer{
 
             return "/uploads/products/"+imageType+"/"+filename;
 
+        } catch (UnsupportedFormatException e) {
+            throw new IllegalArgumentException("Invalid image file for " + imageType + " image");
         } catch (IOException e) {
             throw new RuntimeException("Unable to upload product image", e);
         }

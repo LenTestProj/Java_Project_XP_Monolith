@@ -59,8 +59,8 @@ public class Categories {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-        name="excluded_outlets", 
-        joinColumns = @JoinColumn(name="product_id"),
+        name="category_excluded_outlets",
+        joinColumns = @JoinColumn(name="category_id"),
         inverseJoinColumns = @JoinColumn(name="outlet_id")
     )
     private List<Outlets> excludedOutlets=new ArrayList<Outlets>();

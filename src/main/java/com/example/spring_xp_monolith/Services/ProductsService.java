@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.spring_xp_monolith.Controllers.Errors.ResourceNotFoundException;
 import com.example.spring_xp_monolith.dao.ProductsRepo;
+import com.example.spring_xp_monolith.dto.products.ProductResponseDto;
 import com.example.spring_xp_monolith.dao.CategoriesRepo;
 import com.example.spring_xp_monolith.dao.OutletsRepo;
 import com.example.spring_xp_monolith.dto.products.CreateProductRequestDto;
@@ -26,14 +28,14 @@ public class ProductsService {
     private final ProductImageService productImageService;
 
     @Transactional
-    public Products createProduct(
+    public ProductResponseDto createProduct(
             CreateProductRequestDto request,
             MultipartFile displayImage,
             MultipartFile coverImage) {
 
         // Find category
         Categories category = categoriesRepo.findByIdAndIsDeleteFalse(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         Products product = new Products();
 
@@ -56,7 +58,6 @@ public class ProductsService {
         product.setCategory(category);
         product.setName(request.getName());
         product.setDescription(request.getDescription());
-        product.setDisplayImage(displayImagePath);
 
         product.setProductCost(request.getProductCost());
         product.setMrp(request.getMrp());
@@ -91,12 +92,12 @@ public class ProductsService {
             );
 
             if (excludedOutlets.size() != request.getExcludedOutletIds().size()) {
-                throw new RuntimeException("One or more outlets not found");
+                throw new IllegalArgumentException("One or more outlets not found");
             }
 
             product.setExcludedOutlets(excludedOutlets);
         }
 
-        return productsRepo.save(product);
+        return ProductResponseDto.from(productsRepo.save(product));
     }
 }
