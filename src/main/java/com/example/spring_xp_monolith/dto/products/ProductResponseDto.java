@@ -33,13 +33,11 @@ public class ProductResponseDto {
     private Integer weight;
     private String keywords;
     private Integer sequenceNumber;
-    private Boolean isEventProduct;
     private Boolean isComboProduct;
     private Boolean isFreebieProduct;
     private List<String> productsNature;
     private Boolean isStatusAutoUpdated;
     private List<Long> excludedOutletIds;
-    private Boolean isNewProduct;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -67,14 +65,12 @@ public class ProductResponseDto {
         dto.setWeight(p.getWeight());
         dto.setKeywords(p.getKeywords());
         dto.setSequenceNumber(p.getSequenceNumber());
-        dto.setIsEventProduct(p.getIsEventProduct());
         dto.setIsComboProduct(p.getIsComboProduct());
         dto.setIsFreebieProduct(p.getIsFreebieProduct());
         dto.setProductsNature(p.getProductsNature() == null ? null : new ArrayList<>(p.getProductsNature()));
         dto.setIsStatusAutoUpdated(p.getIsStatusAutoUpdated());
         dto.setExcludedOutletIds(p.getExcludedOutlets() == null ? List.of()
                 : p.getExcludedOutlets().stream().map(Outlets::getId).toList());
-        dto.setIsNewProduct(p.getIsNewProduct());
         dto.setCreatedAt(p.getCreatedAt());
         dto.setUpdatedAt(p.getUpdatedAt());
         return dto;

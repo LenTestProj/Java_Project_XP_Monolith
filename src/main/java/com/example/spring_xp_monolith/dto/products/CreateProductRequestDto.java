@@ -56,11 +56,9 @@ public class CreateProductRequestDto {
     @PositiveOrZero(message = "Weight cannot be negative")
     private Integer weight;
 
-    private String keywords;
+    private List<String> keywords;
 
     private Integer sequenceNumber;
-
-    private Boolean isEventProduct = false;
 
     private Boolean isComboProduct = false;
 
@@ -73,6 +71,4 @@ public class CreateProductRequestDto {
     @Valid 
     @ValidateExcludedOutlets 
     private List<Long> excludedOutletIds;
-
-    private Boolean isNewProduct = false;
 }

@@ -7,6 +7,6 @@ import lombok.EqualsAndHashCode;
 @Data 
 @EqualsAndHashCode (callSuper = true)
 public class UpdateProductRequestDto extends CreateProductRequestDto{
-    @NotNull (message = "Outlet Id is required")
+    @NotNull (message = "Product Id is required")
     private Long id;
 }

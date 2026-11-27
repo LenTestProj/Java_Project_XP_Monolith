@@ -22,12 +22,17 @@ public class ProductImageService implements  WebMvcConfigurer{
     private String uploadDir;
 
     public String uploadProductImage(MultipartFile image,String imageType,int width, int height){
+        return uploadImage(image, "products", imageType, width, height);
+    }
+
+    // Saves to {uploadDir}/{folder}/{imageType}/ and returns the public path.
+    public String uploadImage(MultipartFile image,String folder,String imageType,int width, int height){
         if(image==null || image.isEmpty()){
-            throw new IllegalArgumentException("Product image is required");
+            throw new IllegalArgumentException(capitalize(imageType) + " image is required");
         }
         try {
             //fetch the directory
-            Path directory = Paths.get(uploadDir,"products",imageType);
+            Path directory = Paths.get(uploadDir,folder,imageType);
 
             //create a directory
             Files.createDirectories(directory);
@@ -40,13 +45,17 @@ public class ProductImageService implements  WebMvcConfigurer{
             //Resize and crop to exactly 400 x 400;
             Thumbnails.of(image.getInputStream()).size(width,height).crop(Positions.CENTER).outputFormat("jpg").toFile(destination.toFile());
 
-            return "/uploads/products/"+imageType+"/"+filename;
+            return "/uploads/"+folder+"/"+imageType+"/"+filename;
 
         } catch (UnsupportedFormatException e) {
             throw new IllegalArgumentException("Invalid image file for " + imageType + " image");
         } catch (IOException e) {
-            throw new RuntimeException("Unable to upload product image", e);
+            throw new RuntimeException("Unable to upload " + imageType + " image", e);
         }
+    }
+
+    private static String capitalize(String s) {
+        return s.isEmpty() ? s : Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
 }

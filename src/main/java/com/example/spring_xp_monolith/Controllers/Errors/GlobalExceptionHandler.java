@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.InvalidPropertyException;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getFieldErrors().stream()
                 .findFirst()
-                .map(ObjectError::getDefaultMessage)
+                .map(fe -> fe.isBindingFailure()
+                        ? "Invalid value '" + fe.getRejectedValue() + "' for " + fe.getField()
+                        : fe.getDefaultMessage())
                 .or(() -> ex.getBindingResult().getGlobalErrors().stream()
                         .findFirst()
                         .map(ObjectError::getDefaultMessage))
@@ -123,6 +126,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.BAD_REQUEST, orDefault(ex.getMessage(), "Missing request parameter"));
     }
 
+    @ExceptionHandler(InvalidPropertyException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidProperty(InvalidPropertyException ex) {
+        return build(HttpStatus.BAD_REQUEST, "Invalid field '" + ex.getPropertyName() + "'");
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         return build(HttpStatus.BAD_REQUEST, orDefault(ex.getMessage(), "Bad request"));
@@ -160,7 +168,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErrorResponse> handleMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex) {
         return build(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-                "Unsupported content type. Send multipart/form-data with the 'request' part as application/json");
+                "Unsupported content type. Send the request as multipart/form-data");
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)

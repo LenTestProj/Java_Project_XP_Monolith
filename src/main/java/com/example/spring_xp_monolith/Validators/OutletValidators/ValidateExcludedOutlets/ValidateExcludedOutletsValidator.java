@@ -23,7 +23,7 @@ public class ValidateExcludedOutletsValidator implements ConstraintValidator<Val
 
     @Override
     public boolean isValid(List<Long> outletIds,ConstraintValidatorContext context){
-        if(outletIds.isEmpty()){
+        if(outletIds == null || outletIds.isEmpty()){
             return true;
         }
 
@@ -33,6 +33,10 @@ public class ValidateExcludedOutletsValidator implements ConstraintValidator<Val
         for(Integer i=0;i<outletIds.size();i++){
 
             Long id = outletIds.get(i);
+            if(id == null){
+                context.buildConstraintViolationWithTemplate("Outlet Id at position "+(i+1)+" is empty").addConstraintViolation();
+                return false;
+            }
             //cehck for duplicate Ids.
             if(!uniqueIds.add(id)){
                 context.buildConstraintViolationWithTemplate("Duplciate Ids exists").addConstraintViolation();

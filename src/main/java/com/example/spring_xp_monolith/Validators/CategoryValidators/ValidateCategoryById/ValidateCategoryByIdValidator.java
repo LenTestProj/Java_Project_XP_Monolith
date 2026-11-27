@@ -13,8 +13,14 @@ public class ValidateCategoryByIdValidator implements ConstraintValidator<Valida
 
     @Override
     public boolean isValid(Long id, ConstraintValidatorContext context){
-        if(categoriesRepo.findByIdAndIsDeleteFalse(id) == null){
-            context.buildConstraintViolationWithTemplate("category Id does not exists");
+        // null is handled by @NotNull
+        if(id == null){
+            return true;
+        }
+
+        if(categoriesRepo.findByIdAndIsDeleteFalse(id).isEmpty()){
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Category not found").addConstraintViolation();
             return false;
         }
 

@@ -7,8 +7,11 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import io.micrometer.common.lang.Nullable;
+import com.example.spring_xp_monolith.Enums.Products.FoodType;
+
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,14 +49,18 @@ public class Categories {
     @Enumerated(EnumType.STRING)
     private Status status = Status.INACTIVE;
 
-    private Boolean isEventCategory = false;
-
     private Boolean isComboCategory = false;
 
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    private Boolean isNewCategory = false;
+    private Boolean isStatusAutoUpdated = false;
+
+    @ElementCollection
+    @CollectionTable(name = "category_food_types", joinColumns = @JoinColumn(name = "category_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "food_type")
+    private List<FoodType> foodType = new ArrayList<>();
 
     private Boolean isDelete = false;
 

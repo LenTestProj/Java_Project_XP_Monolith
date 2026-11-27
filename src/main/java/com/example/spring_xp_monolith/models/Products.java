@@ -75,8 +75,6 @@ public class Products {
 
     private Integer sequenceNumber;
 
-    private Boolean isEventProduct = false;
-
     private Boolean isComboProduct = false;
 
     private Boolean isFreebieProduct = false;
@@ -94,8 +92,6 @@ public class Products {
         inverseJoinColumns = @JoinColumn(name="outlet_id")
     )
     private List<Outlets> excludedOutlets=new ArrayList<Outlets>();
-
-    private Boolean isNewProduct = false;
 
     private Boolean isDelete = false;
 
